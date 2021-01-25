@@ -9,7 +9,8 @@
     <title>透明登录页面</title>
     <%
         String path = request.getContextPath();
-    %>    <link rel="stylesheet" href=<%=path %>/css/style.css type="text/css">
+    %>    
+    <link rel="stylesheet" href=<%=path %>/css/style.css type="text/css">
 
 </head>
 ```
