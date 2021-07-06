@@ -87,7 +87,7 @@
     </build>
 ```
 
-##Mybatis层
+## Mybatis层
 **Mybatis核心配置文件**
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
