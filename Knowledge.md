@@ -1,5 +1,5 @@
-#SSM整合
-pom.xml
+# SSM整合
+**pom.xml**
 ```xml
     <!-- 依赖：junit，数据库驱动，连接池，servlet，jsp，mybatis，mybatis-spring，spring -->
     <dependencies>
