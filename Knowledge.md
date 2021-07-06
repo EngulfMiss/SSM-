@@ -208,3 +208,80 @@ public class BookServiceImpl implements BookService {
     }
 }
 ```
+
+## Spring层
+**注意spring的这几个配置文件要有关联(import,或者使用IDEA的功能)**
+**spring整合dao**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 1.关联数据库文件 -->
+    <context:property-placeholder location="classpath:database.properties"></context:property-placeholder>
+
+    <!-- 2.连接池
+        dbcp: 半自动化操作，不能自动连接
+        c3p0: 自动化操作(自动化的加载配置文件，并且可以自动设置到对象中)
+        druid:
+     -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"></property>
+        <property name="jdbcUrl" value="${jdbc.url}"></property>
+        <property name="user" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>
+
+    <!-- 3.sqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <!-- 绑定Mybatis配置文件 -->
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+    </bean>
+
+    <!-- 配置dao接口扫描包，动态实现dao接口，并注入到Spring容器中 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入SqlSessionFactory,用的是value,因为set方法传递的是字符串
+            value的值是自己配置的sqlSessionFactory的id值
+         -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        <!-- 要扫描的dao包 -->
+        <property name="basePackage" value="com.engulf.dao"></property>
+    </bean>
+</beans>
+```
+
+**spring整合service**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 1.扫描service下的包 -->
+    <context:component-scan base-package="com.engulf.service"></context:component-scan>
+
+    <!-- 2.将我们的所有业务类，注入到Spring，可以通过配置或者注解实现 -->
+    <bean id="BookServiceImpl" class="com.engulf.service.BookServiceImpl">
+        <property name="bookMapper" ref="bookMapper"></property>
+    </bean>
+
+    <!-- 3.声明式事务配置 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 注入数据源 -->
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!-- 4.aop事务支持 -->
+
+</beans>
+```
