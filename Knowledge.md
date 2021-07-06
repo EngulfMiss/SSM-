@@ -210,7 +210,8 @@ public class BookServiceImpl implements BookService {
 ```
 
 ## Spring层
-**注意spring的这几个配置文件要有关联(import,或者使用IDEA的功能)**
+**注意spring的这几个配置文件要有关联(import,或者使用IDEA的功能)**  
+____
 **spring整合dao**
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
